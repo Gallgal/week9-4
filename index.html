@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>4.take</title>
+	<style type="text/css">
+		body, section{margin:0 ; background: black; overflow: none; width: 100vw; height: 100vh;}
+		#bg{border-radius: 50%; position: absolute; width: 1000px;  left:calc(50vw - 500px); top:  15vh ; animation: opacity 10s forwards; filter: grayscale(100%);}
+			div{margin:0 ;  z-index: 2;}
+		.hand1{position: absolute; top: 100px ; left:100px; width: 400px; z-index: 1000;}
+		.hand12{position: absolute; top: 100px ; left:100px; width: 400px; opacity: 0.5; animation: drag 3s infinite;}
+		.hand3{position: absolute; top: calc(15vh + 112px) ; left:calc(50vw - 338px); width: 400px; opacity: 0; }
+		/* position: absolute; top: 11vw ; left: 16vw; width: 40vw; */
+		.hand2{position: absolute; top: calc(15vh + 90px); left: calc(50vw - 285px); width: 765px;}
+		@keyframes opacity{0%{opacity: 0} 50%{opacity: 1; /*filter: brightness(1.0);} 100%{filter: brightness(5.0) drop-shadow(0 0 100px white);*/};}
+		@keyframes drag{from{}to{left: 200px; top: 150px; opacity: 0}}
+		
+	</style>
+</head>
+<body>
+<section class="4">
+<div><img id="bg"></div>
+<img class="hand1 droppable" id="bHand" src="hand1.svg">
+<img class="hand12" id="bHand2" src="hand1.svg">
+<img class="hand3" id="tHand" src="hand1.svg">
+<img class="hand2 droppable" id="mHand" src="hand2.svg">
+</section>
+<script src="https://github.com/niklasvh/html2canvas/releases/download/0.5.0-alpha1/html2canvas.js"></script>
+<script type="text/javascript">
+	let currentDroppable = null;
+
+    bHand.onmousedown = function(event) {
+     bHand2.style.display = 'none';
+
+      let shiftX = event.clientX - bHand.getBoundingClientRect().left;
+      let shiftY = event.clientY - bHand.getBoundingClientRect().top;
+
+      moveAt(event.pageX, event.pageY);
+      function moveAt(pageX, pageY) {
+        bHand.style.left = pageX - shiftX + 'px';
+        bHand.style.top = pageY - shiftY + 'px';
+      }
+
+      function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+        bHand.hidden = true;
+        let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+        bHand.hidden = false;
+
+
+        if (!elemBelow) return;
+
+        let droppableBelow = elemBelow.closest('.droppable');
+        if (currentDroppable != droppableBelow) {
+          if (currentDroppable) { // null when we were not over a droppable before this event
+            leaveDroppable(currentDroppable);
+          }
+          currentDroppable = droppableBelow;
+          if (currentDroppable) { // null if we're not coming over a droppable now
+            // (maybe just left the droppable)
+            enterDroppable(currentDroppable);
+          }
+        }
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+
+      bHand.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        bHand.onmouseup = null;
+      };
+
+    };
+
+ function enterDroppable(elem) {
+      bHand.style.display = 'none';
+      tHand.style.opacity = '1.0'
+      	setTimeout(function(){
+      		var bgimg = document.body.appendChild(bg);
+      		bgimg.src = "bg.png"
+      		bgimg.id = "bg"
+      		bg.style.zIndex = '1001'}, 100);
+      }
+
+   function leaveDroppable(elem) {
+    }
+
+
+    bHand.ondragstart = function() {
+      return false;
+
+     
+
+    };
+
+
+
+
+</script>
+</body>
+</html>
